@@ -2,7 +2,6 @@ import fs from 'fs';
 import path from 'path';
 
 let baseDir = ' ';
-let fileName = ' ';
 
 interface errorList {
   linkErrors: string[];
@@ -14,14 +13,13 @@ const errors: errorList = {
 
 interface validateLinkParams {
   linkedFile: string;
-  dir: string;
-  sourceFile: string;
+  sourceFile: path.ParsedPath;
 }
 
 /**
  * Validates a link in an script
  */
-const validateLink = ({ linkedFile, dir, sourceFile }: validateLinkParams) => {
+const validateLink = ({ linkedFile, sourceFile }: validateLinkParams) => {
   let filePath = ' ';
 
   if (linkedFile.charAt(2) === '@') {
@@ -32,10 +30,10 @@ const validateLink = ({ linkedFile, dir, sourceFile }: validateLinkParams) => {
   }
   if (linkedFile.charAt(1) === '@') {
     // @@
-    filePath = path.join(baseDir, dir, linkedFile.replace('@@', ''));
+    filePath = path.join(sourceFile.dir, linkedFile.replace('@@', ''));
   } else if (linkedFile.charAt(0) === '@') {
     // @
-    filePath = path.join(baseDir, linkedFile.replace('@', ''));
+    filePath = path.join(sourceFile.dir, linkedFile.replace('@', ''));
   } else {
     console.log(`Unhandled case for file ${linkedFile}`);
   }
@@ -43,37 +41,40 @@ const validateLink = ({ linkedFile, dir, sourceFile }: validateLinkParams) => {
   const exists = fs.existsSync(filePath);
   if (!exists) {
     errors.linkErrors.push(
-      `Linked file ${linkedFile} in ${sourceFile} does not exist`
+      `Linked file "${linkedFile}" in "${path.format(
+        sourceFile
+      )}" does not exist. Location would be: "${filePath}"`
     );
   }
 
-  return { exists, filePath };
+  return { exists, parsedPath: path.parse(filePath) };
 };
 
 interface validateFileParams {
-  currentFile: string;
-  sourceFile: string;
+  currentFile: path.ParsedPath;
+  dir: string;
 }
 
 /**
  * Validates a file for any errors
  */
-const validateFile = ({ currentFile, sourceFile }: validateFileParams) => {
-  console.log({ currentFile });
+const validateFile = ({ currentFile, dir }: validateFileParams) => {
   let data: string | undefined;
   try {
-    data = fs.readFileSync(currentFile, 'utf-8');
+    data = fs.readFileSync(path.format(currentFile), 'utf-8');
     const links = data.match(/^@.*$/gm);
     if (!links || links.length === 0) return;
     links.forEach((linkedFile: string) => {
-      const { exists, filePath } = validateLink({
+      const { exists, parsedPath } = validateLink({
         linkedFile,
-        dir: baseDir,
-        sourceFile,
+        sourceFile: currentFile,
       });
 
-      if (exists && filePath) {
-        validateFile({ currentFile: filePath, sourceFile: currentFile });
+      if (exists && parsedPath) {
+        validateFile({
+          currentFile: parsedPath,
+          dir,
+        });
       }
     });
   } catch (err) {
@@ -85,13 +86,18 @@ const validateFile = ({ currentFile, sourceFile }: validateFileParams) => {
  * Main function that starts the validation
  */
 const main = (relPath: string) => {
-  const filePath = path.parse(relPath);
-  baseDir = path.resolve(filePath.dir);
-  console.log({ baseDir });
-  fileName = `${filePath.dir}/${filePath.base}`;
+  const parsedPath = path.parse(relPath);
+  baseDir = path.resolve(parsedPath.dir);
 
-  validateFile({ currentFile: fileName, sourceFile: filePath.base });
-  console.log(errors);
+  validateFile({
+    currentFile: parsedPath,
+    dir: baseDir,
+  });
+  if (errors.linkErrors.length > 0) {
+    console.log(`Errors: ${JSON.stringify(errors)}`);
+  } else {
+    console.log(`✅ No errors found`);
+  }
 };
 
 main('./db_objects/install_lct.sql');
