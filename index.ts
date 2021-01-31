@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import readAndPrepareFile from './src/util/readAndPrepareFile';
 
 let baseDir = ' ';
 
@@ -59,10 +60,10 @@ interface validateFileParams {
  * Validates a file for any errors
  */
 const validateFile = ({ currentFile, dir }: validateFileParams) => {
-  let data: string | undefined;
+  let fileContents: string | undefined;
   try {
-    data = fs.readFileSync(path.format(currentFile), 'utf-8');
-    const links = data.match(/^@.*$/gm);
+    fileContents = readAndPrepareFile(path.format(currentFile));
+    const links = fileContents.match(/^@.*$/gm);
     if (!links || links.length === 0) return;
     links.forEach((linkedFile: string) => {
       const { exists, parsedPath } = validateLink({
@@ -78,14 +79,16 @@ const validateFile = ({ currentFile, dir }: validateFileParams) => {
       }
     });
   } catch (err) {
-    console.log(`${err} Filecontents: ${data || 'could not open file'}`);
+    console.log(
+      `${err} Filecontents: ${fileContents || 'could not open file'}`
+    );
   }
 };
 
 /**
  * Main function that starts the validation
  */
-const main = (relPath: string) => {
+const main = (relPath: string): errorList => {
   const parsedPath = path.parse(relPath);
   baseDir = path.resolve(parsedPath.dir);
 
@@ -98,8 +101,10 @@ const main = (relPath: string) => {
   } else {
     console.log(`✅ No errors found`);
   }
+
+  return errors;
 };
 
 main('./db_objects/install_lct.sql');
 
-module.exports = { main };
+export default main;
