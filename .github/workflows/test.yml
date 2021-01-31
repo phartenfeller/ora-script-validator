@@ -1,0 +1,33 @@
+name: Test
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [12.x, 14.x]
+
+    steps:
+      - uses: actions/checkout@master
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@master
+        with:
+          node-version: ${{ matrix.node-version }}
+      - uses: actions/cache@master
+        id: cacheNodeModules
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/yarn.lock') }}
+      - name: yarn install
+        if: steps.cacheNodeModules.outputs.cache-hit != 'true'
+        run: yarn install
+      - run: yarn test
+        env:
+          CI: true
+      - run: yarn lint
+        env:
+          CI: true
+
