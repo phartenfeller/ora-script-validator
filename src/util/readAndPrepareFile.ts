@@ -1,19 +1,24 @@
 import fs from 'fs';
+import { logError } from './logger';
 import replaceAll from './replaceAll';
 
-const NEWLINE = '\n';
+const LB = '\n';
 
 const readAndPrepareFile = (path: string): string => {
   try {
     let data = fs.readFileSync(path, 'utf-8');
 
-    // add newlines to make the processing with line nubmers easier
-    data = replaceAll(data, ',', NEWLINE);
-    data = replaceAll(data, ';', NEWLINE);
+    // remove comments
+    data = data.replace(/\/\*([\s\S]*?)\*\//g, ' '); // multiline
+    data = data.replace(/--.*/g, ' '); // single line
+
+    // add newlines to make the processing with line nubmers easier (limit amount of statements in single line)
+    data = replaceAll(data, ',', `,${LB}`);
+    data = replaceAll(data, ';', `;${LB}`);
 
     return data;
   } catch (err) {
-    console.error(`Cannot read file: ${path}. \n ${err}`);
+    logError(`Cannot read file: ${path}. \n ${err}`);
     throw err;
   }
 };

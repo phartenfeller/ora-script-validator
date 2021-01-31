@@ -15,6 +15,6 @@
     "noEmit": true,
     "noImplicitAny": true
   },
-  "include": ["./src/**/*.ts", "index.ts"],
+  "include": ["./src/**/*.ts", "index.ts", "local.ts"],
   "exclude": ["./test/**/*.js"]
 }

@@ -1,55 +1,19 @@
-import fs from 'fs';
 import path from 'path';
-import readAndPrepareFile from './src/util/readAndPrepareFile';
+import indexFile from './src/fileIndexer';
+import {
+  addTableDef,
+  anyErrorOccurred,
+  getErrors,
+  getTables,
+} from './src/state';
+import ErrorList from './src/types/ErrorList';
+import IndexType from './src/types/IndexType';
+import Loglevel from './src/types/Loglevel';
+import { initLogger, logDebug, logError, logInfo } from './src/util/logger';
+import fkValidator from './src/validators/fkValidator';
+import validateLink from './src/validators/linkValidator';
 
 let baseDir = ' ';
-
-interface errorList {
-  linkErrors: string[];
-}
-
-const errors: errorList = {
-  linkErrors: [],
-};
-
-interface validateLinkParams {
-  linkedFile: string;
-  sourceFile: path.ParsedPath;
-}
-
-/**
- * Validates a link in an script
- */
-const validateLink = ({ linkedFile, sourceFile }: validateLinkParams) => {
-  let filePath = ' ';
-
-  if (linkedFile.charAt(2) === '@') {
-    errors.linkErrors.push(
-      `More than two @ in linked filename: ${sourceFile} ${linkedFile}`
-    );
-    return { exists: false, filePath: null };
-  }
-  if (linkedFile.charAt(1) === '@') {
-    // @@
-    filePath = path.join(sourceFile.dir, linkedFile.replace('@@', ''));
-  } else if (linkedFile.charAt(0) === '@') {
-    // @
-    filePath = path.join(sourceFile.dir, linkedFile.replace('@', ''));
-  } else {
-    console.log(`Unhandled case for file ${linkedFile}`);
-  }
-
-  const exists = fs.existsSync(filePath);
-  if (!exists) {
-    errors.linkErrors.push(
-      `Linked file "${linkedFile}" in "${path.format(
-        sourceFile
-      )}" does not exist. Location would be: "${filePath}"`
-    );
-  }
-
-  return { exists, parsedPath: path.parse(filePath) };
-};
 
 interface validateFileParams {
   currentFile: path.ParsedPath;
@@ -62,33 +26,47 @@ interface validateFileParams {
 const validateFile = ({ currentFile, dir }: validateFileParams) => {
   let fileContents: string | undefined;
   try {
-    fileContents = readAndPrepareFile(path.format(currentFile));
-    const links = fileContents.match(/^@.*$/gm);
-    if (!links || links.length === 0) return;
-    links.forEach((linkedFile: string) => {
-      const { exists, parsedPath } = validateLink({
-        linkedFile,
-        sourceFile: currentFile,
-      });
+    const matches = indexFile(path.format(currentFile));
 
-      if (exists && parsedPath) {
-        validateFile({
-          currentFile: parsedPath,
-          dir,
-        });
-      }
-    });
+    if (matches.length > 0) {
+      matches.forEach((match) => {
+        switch (match.type) {
+          case IndexType.Link:
+            const { exists, parsedPath } = validateLink({
+              linkedFile: match.line,
+              sourceFile: currentFile,
+            });
+
+            // recursively validate this file first before going on -> respect execution order
+            if (exists && parsedPath) {
+              validateFile({
+                currentFile: parsedPath,
+                dir,
+              });
+            }
+            break;
+          case IndexType.Table:
+            addTableDef(match.identifier);
+            break;
+          case IndexType.ForeignKey:
+            fkValidator(match.identifier);
+            break;
+          default:
+            console.error(`Unkown index type: ${match.type}`);
+        }
+      });
+    }
   } catch (err) {
-    console.log(
-      `${err} Filecontents: ${fileContents || 'could not open file'}`
-    );
+    logError(`${err} Filecontents: ${fileContents || 'could not open file'}`);
   }
 };
 
 /**
  * Main function that starts the validation
  */
-const main = (relPath: string): errorList => {
+const main = (relPath: string, level?: Loglevel): ErrorList => {
+  initLogger(level || Loglevel.info);
+
   const parsedPath = path.parse(relPath);
   baseDir = path.resolve(parsedPath.dir);
 
@@ -96,15 +74,16 @@ const main = (relPath: string): errorList => {
     currentFile: parsedPath,
     dir: baseDir,
   });
-  if (errors.linkErrors.length > 0) {
-    console.log(`Errors: ${JSON.stringify(errors)}`);
+  const errors = getErrors();
+  if (anyErrorOccurred()) {
+    logInfo(`Errors: ${JSON.stringify(errors)}`);
   } else {
-    console.log(`✅ No errors found`);
+    logInfo(`✅ No errors found`);
   }
+
+  logDebug(`Tables: ${getTables()}`);
 
   return errors;
 };
-
-main('./db_objects/install_lct.sql');
 
 export default main;

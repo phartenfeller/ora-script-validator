@@ -16,5 +16,10 @@
     "sourceType": "module",
     "project": ["tsconfig.eslint.json"]
   },
-  "plugins": ["prettier", "@typescript-eslint"]
+  "plugins": ["prettier", "@typescript-eslint"],
+  "rules": {
+    "no-case-declarations": 0,
+    "no-unused-vars": 0,
+    "@typescript-eslint/no-unused-vars": 1
+  }
 }
