@@ -1,4 +1,5 @@
 import IndexType from './types/IndexType';
+import { logDebug } from './util/logger';
 import readAndPrepareFile from './util/readAndPrepareFile';
 
 interface IndexMatch {
@@ -16,35 +17,38 @@ const indexFile = (path: string): IndexMatch[] => {
   const lines = fileContents.split('\n');
 
   lines.forEach((line: string, num: number) => {
-    // links to other scripts
-    let match = line.match(/\s*^@.*$/i);
+    if (line) {
+      // links to other scripts
+      let match = line.match(/\s*^@.*$/i);
 
-    if (match && match[0]) {
-      matches.push({ type: IndexType.Link, line, num });
-    }
+      if (match && match[0]) {
+        matches.push({ type: IndexType.Link, line, num });
+      }
 
-    // table creatons
-    match = line.match(/\s*create\s*table\s*(\S+)/i);
+      // table creatons
+      match = line.match(/\s*create\s*table\s*(\S+)/i);
 
-    if (match && match[0]) {
-      matches.push({
-        type: IndexType.Table,
-        line,
-        num,
-        identifier: match[1].toLowerCase(),
-      });
-    }
+      if (match && match[0]) {
+        matches.push({
+          type: IndexType.Table,
+          line,
+          num,
+          identifier: match[1].toLowerCase(),
+        });
+      }
 
-    // foreign keys
-    match = line.match(/\s*foreign\s*key\s*\(\S+\s*references\s*(\S+)/i);
+      // foreign keys
+      match = line.match(/\s*foreign\s*key.*references\s*(\S+)/i);
 
-    if (match && match[0]) {
-      matches.push({
-        type: IndexType.ForeignKey,
-        line,
-        num,
-        identifier: match[1].toLowerCase(),
-      });
+      if (match && match[0]) {
+        logDebug(`match fk ${match[1]}`);
+        matches.push({
+          type: IndexType.ForeignKey,
+          line,
+          num,
+          identifier: match[1].toLowerCase(),
+        });
+      }
     }
   });
 

@@ -1,5 +1,5 @@
 import ErrorList from './types/ErrorList';
-import { logError } from './util/logger';
+import { logDebug, logError } from './util/logger';
 
 const tables: string[] = [];
 
@@ -11,6 +11,7 @@ const errors: ErrorList = {
 // Table functions
 const addTableDef = (table: string | undefined): void => {
   if (table) {
+    logDebug(`Adding table ${table}`);
     tables.push(table);
   } else {
     logError(`No table name provided to addTableDef`);
@@ -19,6 +20,7 @@ const addTableDef = (table: string | undefined): void => {
 
 const tableExists = (table: string | undefined): boolean => {
   if (table) {
+    logDebug(`Checking table ${table}`);
     return tables.includes(table);
   } else {
     logError(`No table name provided to tableExists`);

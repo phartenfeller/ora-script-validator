@@ -26,7 +26,8 @@ interface validateFileParams {
 const validateFile = ({ currentFile, dir }: validateFileParams) => {
   let fileContents: string | undefined;
   try {
-    const matches = indexFile(path.format(currentFile));
+    const fullPath = path.format(currentFile);
+    const matches = indexFile(fullPath);
 
     if (matches.length > 0) {
       matches.forEach((match) => {
@@ -81,7 +82,7 @@ const main = (relPath: string, level?: Loglevel): ErrorList => {
     logInfo(`✅ No errors found`);
   }
 
-  logDebug(`Tables: ${getTables()}`);
+  logDebug(`Tables: ${JSON.stringify(getTables())}`);
 
   return errors;
 };

@@ -16,5 +16,5 @@
     "noImplicitAny": true
   },
   "include": ["./src/**/*.ts", "index.ts", "local.ts"],
-  "exclude": ["./test/**/*.js"]
+  "exclude": ["./test/**/*.js", "testscripts/*.ts"]
 }
