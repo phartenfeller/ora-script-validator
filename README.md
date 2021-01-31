@@ -1,5 +1,8 @@
-# node-js-template
+# ORA Script Validator
 
-Template to quickly start node-js projects.
+A tool to check an Oracle SQL-Script for common errors.
 
-Pre-Configured ESLint + Prettier
+Supported checks:
+
+- Checks linked files (e.g. @@myscript.sql)
+- Checks for foreign keys if the referenced table was created before
