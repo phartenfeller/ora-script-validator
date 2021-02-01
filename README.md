@@ -4,8 +4,10 @@ A tool to check an Oracle SQL-Script for common errors.
 
 ## Usage
 
+Requirements: https://nodejs.org/en/
+
 ```sh
-orasv install.sql
+npx orasv install.sql
 ```
 
 ## Supported checks
