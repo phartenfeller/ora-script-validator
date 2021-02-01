@@ -1,14 +1,27 @@
 {
-  "name": "node-js-template",
-  "version": "1.0.0",
-  "main": "index.js",
-  "repository": "https://github.com/phartenfeller/node-js-template.git",
+  "name": "orasv",
+  "version": "0.0.1",
+  "description": "A CLI to validate Oracle SQL scripts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "orasv": "bin/orasv"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": "https://github.com/phartenfeller/ora-script-validator.git",
   "author": "phartenfeller",
   "license": "MIT",
+  "homepage": "https://github.com/phartenfeller/ora-script-validator",
   "scripts": {
     "start": "ts-node local.ts",
     "lint": "eslint . --ext .ts",
-    "test": "jest"
+    "test": "jest",
+    "build": "tsc"
+  },
+  "dependencies": {
+    "arg": "^5.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.10",
@@ -26,5 +39,14 @@
     "prettier": "^2.2.1",
     "ts-node": "^9.1.1",
     "typescript": "^4.1.3"
-  }
+  },
+  "keywords": [
+    "oracle",
+    "sql",
+    "scripts",
+    "validator",
+    "linter",
+    "cli",
+    "orasv"
+  ]
 }

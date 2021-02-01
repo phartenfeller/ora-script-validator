@@ -2,3 +2,6 @@ test/*
 babel.config.js
 tsconfig.json
 testscripts
+webpack.config.js
+dist
+bin

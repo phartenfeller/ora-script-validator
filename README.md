@@ -2,7 +2,13 @@
 
 A tool to check an Oracle SQL-Script for common errors.
 
-Supported checks:
+## Usage
+
+```sh
+orasv install.sql
+```
+
+## Supported checks
 
 - Checks linked files (e.g. @@myscript.sql)
 - Checks for foreign keys if the referenced table was created before

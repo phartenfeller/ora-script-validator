@@ -1,6 +1,5 @@
 {
   "compilerOptions": {
-    "outDir": "./built",
     "allowJs": true,
     "target": "es6",
     "esModuleInterop": true,
@@ -12,9 +11,17 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "noEmit": true,
-    "noImplicitAny": true
+    "noEmit": false,
+    "noImplicitAny": true,
+    "declaration": true,
+    "outDir": "dist"
   },
-  "include": ["./src/**/*.ts", "index.ts", "local.ts"],
-  "exclude": ["./test/**/*.js", "testscripts/*.ts"]
+  "include": ["./src/**/*.ts", "index.ts", "local.ts", "cli.ts"],
+  "exclude": [
+    "./test/**/*.js",
+    "testscripts/*.ts",
+    "webpack.config.js",
+    "dist",
+    "bin"
+  ]
 }

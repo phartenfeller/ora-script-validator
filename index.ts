@@ -1,3 +1,4 @@
+import fs from 'fs';
 import path from 'path';
 import indexFile from './src/fileIndexer';
 import {
@@ -54,7 +55,7 @@ const validateFile = ({ currentFile, dir }: validateFileParams) => {
             tableExistanceValidator(match.identifier);
             break;
           default:
-            console.error(`Unkown index type: ${match.type}`);
+            logError(`Unkown index type: ${match.type}`);
         }
       });
     }
@@ -66,10 +67,15 @@ const validateFile = ({ currentFile, dir }: validateFileParams) => {
 /**
  * Main function that starts the validation
  */
-const main = (relPath: string, level?: Loglevel): ErrorList => {
-  initLogger(level || Loglevel.info);
+const main = (relPath: string, level: Loglevel): ErrorList => {
+  initLogger(level);
 
   const parsedPath = path.parse(relPath);
+  const exists = fs.existsSync(path.format(parsedPath));
+  if (!exists) {
+    logError(`Can not locate file: ${relPath}`);
+    process.exit(1);
+  }
   baseDir = path.resolve(parsedPath.dir);
 
   validateFile({
