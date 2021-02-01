@@ -1,6 +1,6 @@
 import { addTableRefError, tableExists } from '../state';
 
-const fkValidator = (table: string | undefined): void => {
+const tableExistanceValidator = (table: string | undefined): void => {
   const exists = tableExists(table);
 
   if (!exists) {
@@ -8,4 +8,4 @@ const fkValidator = (table: string | undefined): void => {
   }
 };
 
-export default fkValidator;
+export default tableExistanceValidator;

@@ -1,5 +1,4 @@
 import IndexType from './types/IndexType';
-import { logDebug } from './util/logger';
 import readAndPrepareFile from './util/readAndPrepareFile';
 
 interface IndexMatch {
@@ -41,12 +40,23 @@ const indexFile = (path: string): IndexMatch[] => {
       match = line.match(/\s*foreign\s*key.*references\s*(\S+)/i);
 
       if (match && match[0]) {
-        logDebug(`match fk ${match[1]}`);
         matches.push({
           type: IndexType.ForeignKey,
           line,
           num,
           identifier: match[1].toLowerCase(),
+        });
+      }
+
+      // read / select grants
+      match = line.match(/\s*grant\s*(read|select)\s*on\s*(\S+)/i);
+
+      if (match && match[0]) {
+        matches.push({
+          type: IndexType.ReadGrant,
+          line,
+          num,
+          identifier: match[2].toLowerCase(),
         });
       }
     }

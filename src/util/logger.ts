@@ -1,5 +1,8 @@
 import Loglevel from '../types/Loglevel';
 
+const YELLOW = '\x1b[33m';
+const RESET = '\x1b[0m';
+
 let userLevel: Loglevel = Loglevel.off;
 
 const initLogger = (level: Loglevel): void => {
@@ -18,7 +21,7 @@ const logMsg = (message: string, level: Loglevel): void => {
 
 const logDebug = (message: string): void => {
   if (userLevel >= Loglevel.debug) {
-    console.log('[debug]', message);
+    console.log(`[${YELLOW}debug${RESET}]`, message);
   }
 };
 

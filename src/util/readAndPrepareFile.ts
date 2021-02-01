@@ -12,18 +12,22 @@ const readAndPrepareFile = (path: string): string => {
     data = data.replace(/\/\*([\s\S]*?)\*\//g, ' '); // multiline
     data = data.replace(/--.*/g, ' '); // single line
 
-    // remove all linebraks at create and alter statements to allow line by line analysis of statements
+    // remove all linebraks at various statements to squeeze statements into a single line
     data = data.replace(/create[^"]*;/, (match) => match.replace(/\n/g, ' '));
     data = data.replace(/alter[^"]*;/, (match) => match.replace(/\n/g, ' '));
-
-    // remove all linebraks at constraints
+    data = data.replace(/grant[^"]*;/, (match) => match.replace(/\n/g, ' '));
+    // linebreaks in foreign keys
     data = data.replace(/foreign key[^"]*;/gi, (match) =>
       match.replace(/\n/g, ' ')
     );
 
-    // add linebraks to make the processing with line nubmers easier (limit amount of statements in single line)
+    // add linebraks to make different statements be in different lines
     data = replaceAll(data, ',', `,${LB}`);
     data = replaceAll(data, ';', `;${LB}`);
+    // add linebreak after file links
+    data = data.replace(/@[^\s]+/, (match) =>
+      match.replace(match, `${match}${LB}`)
+    );
 
     // remove empty lines
     data = data.replace(/^\s*[\r\n]/gm, '');

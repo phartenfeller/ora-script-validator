@@ -10,8 +10,8 @@ import ErrorList from './src/types/ErrorList';
 import IndexType from './src/types/IndexType';
 import Loglevel from './src/types/Loglevel';
 import { initLogger, logDebug, logError, logInfo } from './src/util/logger';
-import fkValidator from './src/validators/fkValidator';
 import validateLink from './src/validators/linkValidator';
+import tableExistanceValidator from './src/validators/tableExistanceValidator';
 
 let baseDir = ' ';
 
@@ -50,7 +50,8 @@ const validateFile = ({ currentFile, dir }: validateFileParams) => {
             addTableDef(match.identifier);
             break;
           case IndexType.ForeignKey:
-            fkValidator(match.identifier);
+          case IndexType.ReadGrant:
+            tableExistanceValidator(match.identifier);
             break;
           default:
             console.error(`Unkown index type: ${match.type}`);
