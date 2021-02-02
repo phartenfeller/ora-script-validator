@@ -11,9 +11,9 @@ tsconfig.json
 webpack.config.js
 yarn.lock
 
-src
-node_modules
-db_objects
-.github
-test
-testscripts
+./src
+./node_modules
+./db_objects
+./.github
+./test
+./testscripts
