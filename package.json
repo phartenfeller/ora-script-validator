@@ -18,7 +18,7 @@
     "start": "ts-node local.ts",
     "lint": "eslint . --ext .ts",
     "test": "jest",
-    "build": "tsc"
+    "build": "tsc --project tsconfig.prod.json"
   },
   "dependencies": {
     "arg": "^5.0.0"

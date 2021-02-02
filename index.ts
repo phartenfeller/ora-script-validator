@@ -1,97 +1,41 @@
-import fs from 'fs';
-import path from 'path';
-import indexFile from './src/fileIndexer';
-import {
-  addTableDef,
-  anyErrorOccurred,
-  getErrors,
-  getTables,
-} from './src/state';
-import ErrorList from './src/types/ErrorList';
-import IndexType from './src/types/IndexType';
-import Loglevel from './src/types/Loglevel';
-import { initLogger, logDebug, logError, logInfo } from './src/util/logger';
-import validateLink from './src/validators/linkValidator';
-import tableExistanceValidator from './src/validators/tableExistanceValidator';
+import arg from 'arg';
+import main from './src/main';
 
-let baseDir = ' ';
-
-interface validateFileParams {
-  currentFile: path.ParsedPath;
-  dir: string;
+interface options {
+  file: string;
+  loglevel: number;
 }
 
-/**
- * Validates a file for any errors
- */
-const validateFile = ({ currentFile, dir }: validateFileParams) => {
-  let fileContents: string | undefined;
-  try {
-    const fullPath = path.format(currentFile);
-    const matches = indexFile(fullPath);
-
-    if (matches.length > 0) {
-      matches.forEach((match) => {
-        switch (match.type) {
-          case IndexType.Link:
-            const { exists, parsedPath } = validateLink({
-              linkedFile: match.line,
-              sourceFile: currentFile,
-            });
-
-            // recursively validate this file first before going on -> respect execution order
-            if (exists && parsedPath) {
-              validateFile({
-                currentFile: parsedPath,
-                dir,
-              });
-            }
-            break;
-          case IndexType.Table:
-            addTableDef(match.identifier);
-            break;
-          case IndexType.ForeignKey:
-          case IndexType.ReadGrant:
-            tableExistanceValidator(match.identifier);
-            break;
-          default:
-            logError(`Unkown index type: ${match.type}`);
-        }
-      });
+const parseArgumentsIntoOptions = (rawArgs: string[]): options => {
+  const args = arg(
+    {
+      '--loglevel': Number,
+      '-lly': '--loglevel',
+    },
+    {
+      argv: rawArgs.slice(2),
     }
-  } catch (err) {
-    logError(`${err} Filecontents: ${fileContents || 'could not open file'}`);
-  }
+  );
+
+  return {
+    file: args._[0],
+    loglevel: args['--loglevel'] || 2,
+  };
 };
 
-/**
- * Main function that starts the validation
- */
-const main = (relPath: string, level: Loglevel): ErrorList => {
-  initLogger(level);
-
-  const parsedPath = path.parse(relPath);
-  const exists = fs.existsSync(path.format(parsedPath));
-  if (!exists) {
-    logError(`Can not locate file: ${relPath}`);
+const validateInputs = (options: options) => {
+  if (!options.file) {
+    console.error(
+      `Please specify a file to validate.\nFor example orasv install.sql`
+    );
     process.exit(1);
   }
-  baseDir = path.resolve(parsedPath.dir);
-
-  validateFile({
-    currentFile: parsedPath,
-    dir: baseDir,
-  });
-  const errors = getErrors();
-  if (anyErrorOccurred()) {
-    logInfo(`Errors: ${JSON.stringify(errors)}`);
-  } else {
-    logInfo(`✅ No errors found`);
-  }
-
-  logDebug(`Tables: ${JSON.stringify(getTables())}`);
-
-  return errors;
 };
 
-export default main;
+const cli = (args: string[]): void => {
+  const options = parseArgumentsIntoOptions(args);
+  validateInputs(options);
+  main(options.file, options.loglevel);
+};
+
+export { cli };

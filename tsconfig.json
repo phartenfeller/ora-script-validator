@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "allowJs": true,
+    "allowJs": false,
     "target": "es6",
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
@@ -16,12 +16,12 @@
     "declaration": true,
     "outDir": "dist"
   },
-  "include": ["./src/**/*.ts", "index.ts", "local.ts", "cli.ts"],
+  "include": ["./src/**/*.ts", "local.ts", "index.ts"],
   "exclude": [
     "./test/**/*.js",
     "testscripts/*.ts",
-    "webpack.config.js",
     "dist",
-    "bin"
+    "bin",
+    "node_modules"
   ]
 }
