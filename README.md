@@ -10,7 +10,7 @@ Requirements: https://nodejs.org/en/
 npx orasv install.sql
 ```
 
-You can also directly install it from npm (https://www.npmjs.com/package/orasv) and use it offline:
+You can also directly install it from [NPM](https://www.npmjs.com/package/orasv) and use it offline:
 
 ```sh
 npm i -g orasv
@@ -22,11 +22,23 @@ orasv install.sql
 
 ### Version
 
+Show the current version of orasv.
+
+`--version` or ``-v`
+
+Example:
+
 ```sh
 orasv -v
 ```
 
 ### Loglevel
+
+Determines what gets logged to the console.
+
+`--loglevel {num}` or `-l {num}`
+
+Example:
 
 ```sh
 orasv install.sql -l 1
