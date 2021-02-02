@@ -4,7 +4,7 @@ describe('File Links', () => {
   let main;
 
   beforeEach(() => {
-    return import('../../index').then((module) => {
+    return import('../../src/main').then((module) => {
       main = module;
       jest.resetModules();
     });
