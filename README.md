@@ -2,6 +2,11 @@
 
 A tool to check an Oracle SQL-Script for common errors.
 
+## Supported checks
+
+- Linked Files (e.g. @@myscript.sql)
+- Table References (Foreign Keys, Read Grants)
+
 ## Usage
 
 Requirements: https://nodejs.org/en/
@@ -24,7 +29,7 @@ orasv install.sql
 
 Show the current version of orasv.
 
-`--version` or ``-v`
+`--version` or `-v`
 
 Example:
 
@@ -52,9 +57,3 @@ Levels:
 |   1   | only runtime errors                         |         |
 |   2   | all necessary info                          |   ✅    |
 |   3   | additional debug info to see whats going on |         |
-
-## Supported checks
-
-- Checks linked files (e.g. @@myscript.sql)
-- Checks for foreign keys if the referenced table was created before
-- Check for read / select grants if the referenced table was created before
