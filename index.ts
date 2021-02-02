@@ -1,5 +1,7 @@
 import arg from 'arg';
 import main from './src/main';
+import { logInfo } from './src/util/logger';
+import outputErrors from './src/util/outputErrors';
 
 interface options {
   file: string;
@@ -35,7 +37,13 @@ const validateInputs = (options: options) => {
 const cli = (args: string[]): void => {
   const options = parseArgumentsIntoOptions(args);
   validateInputs(options);
-  main(options.file, options.loglevel);
+  const errors = main(options.file, options.loglevel);
+
+  if (errors.length > 0) {
+    outputErrors(errors);
+  } else {
+    logInfo(`✅ No errors found`);
+  }
 };
 
 export { cli };

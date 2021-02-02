@@ -6,6 +6,7 @@ const tables: string[] = [];
 const errors: ErrorList = {
   linkErrors: [],
   tableRefErrors: [],
+  length: 0,
 };
 
 // Table functions
@@ -35,14 +36,12 @@ const getTables = (): string[] => {
 // Error function
 const addLinkError = (error: string): void => {
   errors.linkErrors.push(error);
+  errors.length++;
 };
 
 const addTableRefError = (error: string): void => {
   errors.tableRefErrors.push(error);
-};
-
-const anyErrorOccurred = (): boolean => {
-  return errors.linkErrors.length > 0 || errors.tableRefErrors.length > 0;
+  errors.length++;
 };
 
 const getErrors = (): ErrorList => {
@@ -52,7 +51,6 @@ const getErrors = (): ErrorList => {
 export {
   addLinkError,
   addTableRefError,
-  anyErrorOccurred,
   getErrors,
   addTableDef,
   tableExists,

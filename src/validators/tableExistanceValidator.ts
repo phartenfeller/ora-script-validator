@@ -1,10 +1,22 @@
 import { addTableRefError, tableExists } from '../state';
 
-const tableExistanceValidator = (table: string | undefined): void => {
+interface tableExistanceValidatorParams {
+  table: string | undefined;
+  match: string;
+  callingFile: string;
+}
+
+const tableExistanceValidator = ({
+  table,
+  match,
+  callingFile,
+}: tableExistanceValidatorParams): void => {
   const exists = tableExists(table);
 
   if (!exists) {
-    addTableRefError(`Referenced Table does not exist yet: ${table}`);
+    addTableRefError(
+      `Table referenced in "${callingFile}" does not exist yet: ${table}. Statement: "${match}"`
+    );
   }
 };
 

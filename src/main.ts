@@ -1,11 +1,11 @@
 import fs from 'fs';
 import path from 'path';
 import indexFile from './fileIndexer';
-import { addTableDef, anyErrorOccurred, getErrors, getTables } from './state';
+import { addTableDef, getErrors, getTables } from './state';
 import ErrorList from './types/ErrorList';
 import IndexType from './types/IndexType';
 import Loglevel from './types/Loglevel';
-import { initLogger, logDebug, logError, logInfo } from './util/logger';
+import { initLogger, logDebug, logError } from './util/logger';
 import validateLink from './validators/linkValidator';
 import tableExistanceValidator from './validators/tableExistanceValidator';
 
@@ -47,7 +47,11 @@ const validateFile = ({ currentFile, dir }: validateFileParams) => {
             break;
           case IndexType.ForeignKey:
           case IndexType.ReadGrant:
-            tableExistanceValidator(match.identifier);
+            tableExistanceValidator({
+              table: match.identifier,
+              callingFile: match.callingFile,
+              match: match.match,
+            });
             break;
           default:
             logError(`Unkown index type: ${match.type}`);
@@ -78,11 +82,6 @@ const main = (relPath: string, level: Loglevel): ErrorList => {
     dir: baseDir,
   });
   const errors = getErrors();
-  if (anyErrorOccurred()) {
-    logInfo(`Errors: ${JSON.stringify(errors)}`);
-  } else {
-    logInfo(`✅ No errors found`);
-  }
 
   logDebug(`Tables: ${JSON.stringify(getTables())}`);
 

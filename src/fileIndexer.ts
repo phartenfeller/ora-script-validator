@@ -6,6 +6,8 @@ interface IndexMatch {
   line: string;
   num: number;
   identifier?: string;
+  match: string;
+  callingFile: string;
 }
 
 const indexFile = (path: string): IndexMatch[] => {
@@ -21,7 +23,13 @@ const indexFile = (path: string): IndexMatch[] => {
       let match = line.match(/\s*^@.*$/i);
 
       if (match && match[0]) {
-        matches.push({ type: IndexType.Link, line, num });
+        matches.push({
+          type: IndexType.Link,
+          line,
+          num,
+          match: match[0],
+          callingFile: path,
+        });
       }
 
       // table creatons
@@ -33,6 +41,8 @@ const indexFile = (path: string): IndexMatch[] => {
           line,
           num,
           identifier: match[1].toLowerCase(),
+          match: match[0],
+          callingFile: path,
         });
       }
 
@@ -45,6 +55,8 @@ const indexFile = (path: string): IndexMatch[] => {
           line,
           num,
           identifier: match[1].toLowerCase(),
+          match: match[0],
+          callingFile: path,
         });
       }
 
@@ -57,6 +69,8 @@ const indexFile = (path: string): IndexMatch[] => {
           line,
           num,
           identifier: match[2].toLowerCase(),
+          match: match[0],
+          callingFile: path,
         });
       }
     }
