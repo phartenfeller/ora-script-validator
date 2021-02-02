@@ -42,7 +42,7 @@ const logInfo = (message: string): void => {
 
 const logError = (message: string): void => {
   if (userLevel >= Loglevel.error) {
-    console.error(message);
+    console.error(`[${redText('error')}]`, message);
   }
 };
 
