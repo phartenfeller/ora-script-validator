@@ -1,6 +1,6 @@
 # ORA Script Validator
 
-A tool to check an Oracle SQL-Script for common errors.
+A CLI to validate Oracle SQL-Scripts for common errors.
 
 ## Supported checks
 
