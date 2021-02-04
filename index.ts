@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import arg from 'arg';
 import { version } from './package.json';
 import main from './src/main';

@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import Loglevel from '../types/Loglevel';
 
 const YELLOW = '\x1b[33m';
