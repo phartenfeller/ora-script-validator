@@ -23,6 +23,6 @@ describe('File Links', () => {
       `./test/tableRefs/error/install.sql`,
       Loglevel.error
     ).tableRefErrors.length;
-    expect(errors).toEqual(1);
+    expect(errors).toEqual(2);
   });
 });

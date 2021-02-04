@@ -1,4 +1,4 @@
-create table (
+create table my_other_table (
   this_id number,
   that_id number,
   constraint my_fk

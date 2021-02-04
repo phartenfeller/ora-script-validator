@@ -3,6 +3,7 @@ enum IndexType {
   Table,
   ForeignKey,
   ReadGrant,
+  AlterTable,
 }
 
 export default IndexType;

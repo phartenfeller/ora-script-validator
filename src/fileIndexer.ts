@@ -73,6 +73,20 @@ const indexFile = (path: string): IndexMatch[] => {
           callingFile: path,
         });
       }
+
+      // alter table
+      match = line.match(/\s*alter\s*table\s*(\S+)/i);
+
+      if (match && match[0]) {
+        matches.push({
+          type: IndexType.AlterTable,
+          line,
+          num,
+          identifier: match[1].toLowerCase(),
+          match: match[0],
+          callingFile: path,
+        });
+      }
     }
   });
 

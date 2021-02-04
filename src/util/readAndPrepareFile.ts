@@ -25,12 +25,14 @@ const readAndPrepareFile = (path: string): string => {
     data = replaceAll(data, ',', `,${LB}`);
     data = replaceAll(data, ';', `;${LB}`);
     // add linebreak after file links
-    data = data.replace(/@[^\s]+/, (match) =>
-      match.replace(match, `${match}${LB}`)
+    data = data.replace(/@[^\s]+/gm, (match) =>
+      match.replace(match, match + LB)
     );
 
     // remove empty lines
     data = data.replace(/^\s*[\r\n]/gm, '');
+    // left trim whitespace
+    data = data.replace(/^ +/gm, '');
 
     return data;
   } catch (err) {
