@@ -48,6 +48,7 @@ const validateFile = ({ currentFile, dir }: validateFileParams) => {
           case IndexType.ForeignKey:
           case IndexType.ReadGrant:
           case IndexType.AlterTable:
+          case IndexType.DMLStatement:
             tableExistanceValidator({
               table: match.identifier,
               callingFile: match.callingFile,

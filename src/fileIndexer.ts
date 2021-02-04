@@ -87,6 +87,48 @@ const indexFile = (path: string): IndexMatch[] => {
           callingFile: path,
         });
       }
+
+      // insert statement
+      match = line.match(/\s*insert\s*into\s*(\S+)/i);
+
+      if (match && match[0]) {
+        matches.push({
+          type: IndexType.DMLStatement,
+          line,
+          num,
+          identifier: match[1].toLowerCase(),
+          match: match[0],
+          callingFile: path,
+        });
+      }
+
+      // update statements
+      match = line.match(/\s*update\s*(\S+)\sset/i);
+
+      if (match && match[0]) {
+        matches.push({
+          type: IndexType.DMLStatement,
+          line,
+          num,
+          identifier: match[1].toLowerCase(),
+          match: match[0],
+          callingFile: path,
+        });
+      }
+
+      // delete statement
+      match = line.match(/\s*delete\s*from\s*(\S+)/i);
+
+      if (match && match[0]) {
+        matches.push({
+          type: IndexType.DMLStatement,
+          line,
+          num,
+          identifier: match[1].toLowerCase(),
+          match: match[0],
+          callingFile: path,
+        });
+      }
     }
   });
 

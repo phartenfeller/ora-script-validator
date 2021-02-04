@@ -5,7 +5,7 @@ A CLI to validate Oracle SQL-Scripts for common errors.
 ## Supported checks
 
 - Linked Files (e.g. @@myscript.sql)
-- Table References (Foreign Keys, Read Grants)
+- Table References (Foreign Keys, Read Grants, Alters, DML)
 
 ## Usage
 

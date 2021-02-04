@@ -4,6 +4,7 @@ enum IndexType {
   ForeignKey,
   ReadGrant,
   AlterTable,
+  DMLStatement,
 }
 
 export default IndexType;

@@ -16,6 +16,9 @@ const readAndPrepareFile = (path: string): string => {
     data = data.replace(/create[^"]*;/, (match) => match.replace(/\n/g, ' '));
     data = data.replace(/alter[^"]*;/, (match) => match.replace(/\n/g, ' '));
     data = data.replace(/grant[^"]*;/, (match) => match.replace(/\n/g, ' '));
+    data = data.replace(/insert[^"]*;/, (match) => match.replace(/\n/g, ' '));
+    data = data.replace(/update[^"]*;/, (match) => match.replace(/\n/g, ' '));
+    data = data.replace(/delete[^"]*;/, (match) => match.replace(/\n/g, ' '));
     // linebreaks in foreign keys
     data = data.replace(/foreign key[^"]*;/gi, (match) =>
       match.replace(/\n/g, ' ')
