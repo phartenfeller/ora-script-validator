@@ -5,10 +5,67 @@ interface IndexMatch {
   type: IndexType;
   line: string;
   num: number;
-  identifier?: string;
+  identifier: string | undefined;
   match: string;
   callingFile: string;
 }
+
+interface Matcher {
+  type: IndexType;
+  regex: RegExp;
+  identifierIndex: number | null;
+}
+
+const matchers: Matcher[] = [
+  // links to other scripts
+  {
+    type: IndexType.Link,
+    regex: /\s*^@.*$/i,
+    identifierIndex: null,
+  },
+  // table creatons
+  {
+    type: IndexType.Table,
+    regex: /\s*create\s*table\s*(\S+)/i,
+    identifierIndex: 1,
+  },
+  // foreign keys
+  {
+    type: IndexType.ForeignKey,
+    regex: /\s*foreign\s*key.*references\s*(\S+)/i,
+    identifierIndex: 1,
+  },
+  // read / select grants
+  {
+    type: IndexType.ReadGrant,
+    regex: /\s*grant\s*(read|select)\s*on\s*(\S+)/i,
+    identifierIndex: 2,
+  },
+  // alter table
+  {
+    type: IndexType.AlterTable,
+    regex: /\s*alter\s*table\s*(\S+)/i,
+    identifierIndex: 1,
+  },
+  // insert statement
+  {
+    type: IndexType.DMLStatement,
+    regex: /\s*insert\s*into\s*(\S+)/i,
+    identifierIndex: 1,
+  },
+  // update statements
+  {
+    type: IndexType.DMLStatement,
+    regex: /\s*update\s*(\S+)\sset/i,
+    identifierIndex: 1,
+  },
+  // delete statement
+  {
+    type: IndexType.DMLStatement,
+    regex: /\s*delete\s*from\s*(\S+)/i,
+    identifierIndex: 1,
+  },
+];
 
 const indexFile = (path: string): IndexMatch[] => {
   const matches: IndexMatch[] = [];
@@ -19,116 +76,23 @@ const indexFile = (path: string): IndexMatch[] => {
 
   lines.forEach((line: string, num: number) => {
     if (line) {
-      // links to other scripts
-      let match = line.match(/\s*^@.*$/i);
+      matchers.forEach((matcher) => {
+        const match = line.match(matcher.regex);
 
-      if (match && match[0]) {
-        matches.push({
-          type: IndexType.Link,
-          line,
-          num,
-          match: match[0],
-          callingFile: path,
-        });
-      }
-
-      // table creatons
-      match = line.match(/\s*create\s*table\s*(\S+)/i);
-
-      if (match && match[0]) {
-        matches.push({
-          type: IndexType.Table,
-          line,
-          num,
-          identifier: match[1].toLowerCase(),
-          match: match[0],
-          callingFile: path,
-        });
-      }
-
-      // foreign keys
-      match = line.match(/\s*foreign\s*key.*references\s*(\S+)/i);
-
-      if (match && match[0]) {
-        matches.push({
-          type: IndexType.ForeignKey,
-          line,
-          num,
-          identifier: match[1].toLowerCase(),
-          match: match[0],
-          callingFile: path,
-        });
-      }
-
-      // read / select grants
-      match = line.match(/\s*grant\s*(read|select)\s*on\s*(\S+)/i);
-
-      if (match && match[0]) {
-        matches.push({
-          type: IndexType.ReadGrant,
-          line,
-          num,
-          identifier: match[2].toLowerCase(),
-          match: match[0],
-          callingFile: path,
-        });
-      }
-
-      // alter table
-      match = line.match(/\s*alter\s*table\s*(\S+)/i);
-
-      if (match && match[0]) {
-        matches.push({
-          type: IndexType.AlterTable,
-          line,
-          num,
-          identifier: match[1].toLowerCase(),
-          match: match[0],
-          callingFile: path,
-        });
-      }
-
-      // insert statement
-      match = line.match(/\s*insert\s*into\s*(\S+)/i);
-
-      if (match && match[0]) {
-        matches.push({
-          type: IndexType.DMLStatement,
-          line,
-          num,
-          identifier: match[1].toLowerCase(),
-          match: match[0],
-          callingFile: path,
-        });
-      }
-
-      // update statements
-      match = line.match(/\s*update\s*(\S+)\sset/i);
-
-      if (match && match[0]) {
-        matches.push({
-          type: IndexType.DMLStatement,
-          line,
-          num,
-          identifier: match[1].toLowerCase(),
-          match: match[0],
-          callingFile: path,
-        });
-      }
-
-      // delete statement
-      match = line.match(/\s*delete\s*from\s*(\S+)/i);
-
-      if (match && match[0]) {
-        matches.push({
-          type: IndexType.DMLStatement,
-          line,
-          num,
-          identifier: match[1].toLowerCase(),
-          match: match[0],
-          callingFile: path,
-        });
-      }
+        if (match && match[0]) {
+          matches.push({
+            type: matcher.type,
+            line,
+            num,
+            match: match[0],
+            callingFile: path,
+            identifier:
+              matcher.identifierIndex !== null
+                ? match[matcher.identifierIndex].toLowerCase()
+                : undefined,
+          });
+        }
+      });
     }
   });
 
