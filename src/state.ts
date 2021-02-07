@@ -2,10 +2,12 @@ import ErrorList from './types/ErrorList';
 import { logDebug, logError } from './util/logger';
 
 const tables: string[] = [];
+const sequences: string[] = [];
 
 const errors: ErrorList = {
   linkErrors: [],
   tableRefErrors: [],
+  seqRefErrors: [],
   length: 0,
 };
 
@@ -33,6 +35,26 @@ const getTables = (): string[] => {
   return tables;
 };
 
+// Sequence functions
+const addSeqDef = (seq: string | undefined): void => {
+  if (seq) {
+    logDebug(`Adding sequence ${seq}`);
+    sequences.push(seq);
+  } else {
+    logError(`No sequence name provided to addSeqDef`);
+  }
+};
+
+const seqExists = (seq: string | undefined): boolean => {
+  if (seq) {
+    logDebug(`Checking seq ${seq}`);
+    return sequences.includes(seq);
+  } else {
+    logError(`No seq name provided to seqExists`);
+    return true;
+  }
+};
+
 // Error function
 const addLinkError = (error: string): void => {
   errors.linkErrors.push(error);
@@ -41,6 +63,11 @@ const addLinkError = (error: string): void => {
 
 const addTableRefError = (error: string): void => {
   errors.tableRefErrors.push(error);
+  errors.length++;
+};
+
+const addSeqRefError = (error: string): void => {
+  errors.seqRefErrors.push(error);
   errors.length++;
 };
 
@@ -55,4 +82,7 @@ export {
   addTableDef,
   tableExists,
   getTables,
+  addSeqDef,
+  seqExists,
+  addSeqRefError,
 };

@@ -5,6 +5,8 @@ enum IndexType {
   ReadGrant,
   AlterTable,
   DMLStatement,
+  CreateSequence,
+  SeqNextval,
 }
 
 export default IndexType;

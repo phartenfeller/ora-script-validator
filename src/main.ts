@@ -1,12 +1,13 @@
 import fs from 'fs';
 import path from 'path';
 import indexFile from './fileIndexer';
-import { addTableDef, getErrors, getTables } from './state';
+import { addSeqDef, addTableDef, getErrors, getTables } from './state';
 import ErrorList from './types/ErrorList';
 import IndexType from './types/IndexType';
 import Loglevel from './types/Loglevel';
 import { initLogger, logDebug, logError } from './util/logger';
 import validateLink from './validators/linkValidator';
+import seqExistanceValidator from './validators/seqExistanceValidator';
 import tableExistanceValidator from './validators/tableExistanceValidator';
 
 let baseDir = ' ';
@@ -51,6 +52,16 @@ const validateFile = ({ currentFile, dir }: validateFileParams) => {
           case IndexType.DMLStatement:
             tableExistanceValidator({
               table: match.identifier,
+              callingFile: match.callingFile,
+              match: match.match,
+            });
+            break;
+          case IndexType.CreateSequence:
+            addSeqDef(match.identifier);
+            break;
+          case IndexType.SeqNextval:
+            seqExistanceValidator({
+              seq: match.identifier,
               callingFile: match.callingFile,
               match: match.match,
             });

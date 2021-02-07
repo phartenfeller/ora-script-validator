@@ -31,6 +31,10 @@ const readAndPrepareFile = (path: string): string => {
     data = data.replace(/@[^\s]+/gm, (match) =>
       match.replace(match, match + LB)
     );
+    // add linebreak after create table
+    data = data.replace(/\s*create\s*table\s*(\S+)\s\(/gm, (match) =>
+      match.replace(match, match + LB)
+    );
 
     // remove empty lines
     data = data.replace(/^\s*[\r\n]/gm, '');

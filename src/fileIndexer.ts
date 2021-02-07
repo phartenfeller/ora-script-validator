@@ -65,6 +65,18 @@ const matchers: Matcher[] = [
     regex: /\s*delete\s*from\s*(\S+)/i,
     identifierIndex: 1,
   },
+  // create sequence
+  {
+    type: IndexType.CreateSequence,
+    regex: /\s*create\s*sequence\s*(\S+[^;])/i,
+    identifierIndex: 1,
+  },
+  // sequence nextval
+  {
+    type: IndexType.SeqNextval,
+    regex: /\s*(\S+).nextval/i,
+    identifierIndex: 1,
+  },
 ];
 
 const indexFile = (path: string): IndexMatch[] => {
@@ -88,7 +100,7 @@ const indexFile = (path: string): IndexMatch[] => {
             callingFile: path,
             identifier:
               matcher.identifierIndex !== null
-                ? match[matcher.identifierIndex].toLowerCase()
+                ? match[matcher.identifierIndex].trim().toLowerCase()
                 : undefined,
           });
         }

@@ -15,6 +15,7 @@ const outputErrors = (errors: ErrorList): void => {
 
   logCategory(errors.linkErrors, 'Link Errors');
   logCategory(errors.tableRefErrors, 'Table Ref Errors');
+  logCategory(errors.seqRefErrors, 'Sequence Ref Errors');
 };
 
 export default outputErrors;
