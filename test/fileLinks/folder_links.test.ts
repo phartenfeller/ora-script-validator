@@ -18,6 +18,14 @@ describe('File Links', () => {
     expect(errors).toEqual(0);
   });
 
+  test('Expected to succeed - Folders Up', () => {
+    const errors = main.default(
+      `./test/fileLinks/success_folders_up/deep/folder/nesting/install.sql`,
+      Loglevel.error
+    ).linkErrors.length;
+    expect(errors).toEqual(0);
+  });
+
   test('Expected to fail', () => {
     const errors = main.default(
       `./test/fileLinks/error/install.sql`,
