@@ -1,11 +1,12 @@
 import fs from 'fs';
-import { logError } from './logger';
+import { logDebug, logError } from './logger';
 import replaceAll from './replaceAll';
 
 const LB = '\n';
 
 const readAndPrepareFile = (path: string): string => {
   try {
+    logDebug(`processing file: ${path}`);
     let data = fs.readFileSync(path, 'utf-8');
 
     // remove comments
