@@ -12,6 +12,7 @@ interface options {
   file: string;
   loglevel: number;
   version: boolean;
+  traceFileIndexing: boolean;
 }
 
 const parseArgumentsIntoOptions = (rawArgs: string[]): options => {
@@ -19,6 +20,7 @@ const parseArgumentsIntoOptions = (rawArgs: string[]): options => {
     {
       '--loglevel': Number,
       '--version': Boolean,
+      '--traceFileIndexing': Boolean,
 
       // aliases
       '-l': '--loglevel',
@@ -33,6 +35,7 @@ const parseArgumentsIntoOptions = (rawArgs: string[]): options => {
     file: args._[0],
     loglevel: args['--loglevel'] || 2,
     version: args['--version'] || false,
+    traceFileIndexing: args['--traceFileIndexing'] || false,
   };
 };
 
@@ -56,7 +59,11 @@ const cli = (args: string[]): void => {
   const options = parseArgumentsIntoOptions(args);
   logVersion(options.version);
   validateInputs(options);
-  const errors = main(options.file, options.loglevel);
+  const errors = main(
+    options.file,
+    options.loglevel,
+    options.traceFileIndexing
+  );
 
   if (errors.length > 0) {
     outputErrors(errors);

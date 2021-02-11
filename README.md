@@ -57,3 +57,13 @@ Levels:
 |   1   | only runtime errors                         |         |
 |   2   | all necessary info                          |   ✅    |
 |   3   | additional debug info to see whats going on |         |
+
+### Debug args
+
+#### Trace File Indexing:
+
+Prints how a file is internally indexed.
+
+```sh
+orasv ìnstall.sql --traceFileIndexing
+```

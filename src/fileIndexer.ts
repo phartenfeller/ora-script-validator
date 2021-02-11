@@ -1,4 +1,5 @@
 import IndexType from './types/IndexType';
+import { logInfo } from './util/logger';
 import readAndPrepareFile from './util/readAndPrepareFile';
 
 interface IndexMatch {
@@ -79,10 +80,17 @@ const matchers: Matcher[] = [
   },
 ];
 
-const indexFile = (path: string): IndexMatch[] => {
+const indexFile = (path: string, tfi: boolean | undefined): IndexMatch[] => {
   const matches: IndexMatch[] = [];
 
   const fileContents = readAndPrepareFile(path);
+
+  // trace file index mode only prints the output of readAndPrepareFile and the matches
+  if (tfi) {
+    logInfo('====== readAndPrepareFile ======');
+    logInfo(fileContents);
+    logInfo('\n\n');
+  }
 
   const lines = fileContents.split('\n');
 
@@ -107,6 +115,15 @@ const indexFile = (path: string): IndexMatch[] => {
       });
     }
   });
+
+  if (tfi) {
+    logInfo('====== matches ======');
+    const logMatches = matches.map((match) => {
+      return { typeString: IndexType[match.type], ...match };
+    });
+    logInfo(JSON.stringify(logMatches, null, 2));
+    process.exit(0);
+  }
 
   return matches;
 };

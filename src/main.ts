@@ -11,6 +11,7 @@ import seqExistanceValidator from './validators/seqExistanceValidator';
 import tableExistanceValidator from './validators/tableExistanceValidator';
 
 let baseDir = ' ';
+let TFI: boolean | undefined;
 
 interface validateFileParams {
   currentFile: path.ParsedPath;
@@ -21,10 +22,9 @@ interface validateFileParams {
  * Validates a file for any errors
  */
 const validateFile = ({ currentFile, dir }: validateFileParams) => {
-  let fileContents: string | undefined;
   try {
     const fullPath = path.format(currentFile);
-    const matches = indexFile(fullPath);
+    const matches = indexFile(fullPath, TFI);
 
     if (matches.length > 0) {
       matches.forEach((match) => {
@@ -72,15 +72,20 @@ const validateFile = ({ currentFile, dir }: validateFileParams) => {
       });
     }
   } catch (err) {
-    logError(`${err} Filecontents: ${fileContents || 'could not open file'}`);
+    logError(err);
   }
 };
 
 /**
  * Main function that starts the validation
  */
-const main = (relPath: string, level: Loglevel): ErrorList => {
+const main = (
+  relPath: string,
+  level: Loglevel,
+  traceFileIndexing = false
+): ErrorList => {
   initLogger(level);
+  TFI = traceFileIndexing;
 
   const parsedPath = path.parse(relPath);
   const exists = fs.existsSync(path.format(parsedPath));
