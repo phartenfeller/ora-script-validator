@@ -13,6 +13,10 @@ const readAndPrepareFile = (path: string): string => {
     data = data.replace(/\/\*([\s\S]*?)\*\//g, ' '); // multiline
     data = data.replace(/--.*/g, ' '); // single line
 
+    // remove sql script commands
+    data = data.replace(/prompt.*/gi, ' '); // single line
+    data = data.replace(/spool.*/gi, ' '); // single line
+
     // remove all linebraks at various statements to squeeze statements into a single line
     data = data.replace(/create[^"]*;/, (match) => match.replace(/\n/g, ' '));
     data = data.replace(/alter[^"]*;/, (match) => match.replace(/\n/g, ' '));
