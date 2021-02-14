@@ -5,7 +5,7 @@ import { addSeqDef, addTableDef, getErrors, getTables } from './state';
 import ErrorList from './types/ErrorList';
 import IndexType from './types/IndexType';
 import Loglevel from './types/Loglevel';
-import { initLogger, logDebug, logError } from './util/logger';
+import { logDebug, logError } from './util/logger';
 import validateLink from './validators/linkValidator';
 import seqExistanceValidator from './validators/seqExistanceValidator';
 import tableExistanceValidator from './validators/tableExistanceValidator';
@@ -84,7 +84,6 @@ const main = (
   level: Loglevel,
   traceFileIndexing = false
 ): ErrorList => {
-  initLogger(level);
   TFI = traceFileIndexing;
 
   const parsedPath = path.parse(relPath);

@@ -1,8 +1,9 @@
 /* eslint-disable no-console */
 import arg from 'arg';
 import { version } from './package.json';
+import genConfig from './src/config/genConfig';
 import main from './src/main';
-import { logInfo } from './src/util/logger';
+import { initLogger, logInfo } from './src/util/logger';
 import outputErrors from './src/util/outputErrors';
 
 // Codes at: https://nodejs.org/api/process.html#process_exit_codes
@@ -13,6 +14,7 @@ interface options {
   loglevel: number;
   version: boolean;
   traceFileIndexing: boolean;
+  genConfig: boolean;
 }
 
 const parseArgumentsIntoOptions = (rawArgs: string[]): options => {
@@ -21,6 +23,7 @@ const parseArgumentsIntoOptions = (rawArgs: string[]): options => {
       '--loglevel': Number,
       '--version': Boolean,
       '--traceFileIndexing': Boolean,
+      '--genConfig': Boolean,
 
       // aliases
       '-l': '--loglevel',
@@ -36,14 +39,13 @@ const parseArgumentsIntoOptions = (rawArgs: string[]): options => {
     loglevel: args['--loglevel'] || 2,
     version: args['--version'] || false,
     traceFileIndexing: args['--traceFileIndexing'] || false,
+    genConfig: args['--genConfig'] || false,
   };
 };
 
-const logVersion = (logVersion: boolean) => {
-  if (logVersion) {
-    console.log(version);
-    process.exit(0);
-  }
+const logVersion = () => {
+  console.log(version);
+  process.exit(0);
 };
 
 const validateInputs = (options: options) => {
@@ -57,19 +59,27 @@ const validateInputs = (options: options) => {
 
 const cli = (args: string[]): void => {
   const options = parseArgumentsIntoOptions(args);
-  logVersion(options.version);
-  validateInputs(options);
-  const errors = main(
-    options.file,
-    options.loglevel,
-    options.traceFileIndexing
-  );
 
-  if (errors.length > 0) {
-    outputErrors(errors);
-    process.exit(1);
+  initLogger(options.loglevel);
+
+  if (options.version) {
+    logVersion();
+  } else if (options.genConfig) {
+    genConfig();
   } else {
-    logInfo(`✅ No errors found`);
+    validateInputs(options);
+    const errors = main(
+      options.file,
+      options.loglevel,
+      options.traceFileIndexing
+    );
+
+    if (errors.length > 0) {
+      outputErrors(errors);
+      process.exit(1);
+    } else {
+      logInfo(`✅ No errors found`);
+    }
   }
 };
 
