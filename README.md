@@ -37,6 +37,18 @@ Example:
 orasv -v
 ```
 
+### Config File
+
+Generate config file (written to the current dir as `orasv.config.json`):
+
+```sh
+orasv --genConfig
+```
+
+Pass custom config path (default is `orasv.config.json`):
+
+`orasv -c {path}` or `orasv --config {path}`
+
 ### Loglevel
 
 Determines what gets logged to the console.
@@ -65,5 +77,5 @@ Levels:
 Prints how a file is internally indexed.
 
 ```sh
-orasv ìnstall.sql --traceFileIndexing
+orasv install.sql --traceFileIndexing
 ```
