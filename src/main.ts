@@ -54,6 +54,7 @@ const validateFile = ({ currentFile, dir }: validateFileParams) => {
               table: match.identifier,
               callingFile: match.callingFile,
               match: match.match,
+              indexer: match.type,
             });
             break;
           case IndexType.CreateSequence:
@@ -78,18 +79,19 @@ const validateFile = ({ currentFile, dir }: validateFileParams) => {
 
 interface mainArgs {
   relPath: string;
-  traceFileIndexing: boolean;
+  traceFileIndexing?: boolean;
   configPath?: string;
 }
 
 /**
  * Main function that starts the validation
  */
-const main = ({
-  relPath,
-  traceFileIndexing = false,
-  configPath = './orasv.config.json',
-}: mainArgs): ErrorList => {
+const main = (args: mainArgs): ErrorList => {
+  const {
+    relPath,
+    traceFileIndexing = false,
+    configPath = './orasv.config.json',
+  } = args;
   TFI = traceFileIndexing;
 
   checkConfig(configPath);

@@ -1,4 +1,5 @@
 import fs from 'fs';
+import path from 'path';
 import { initTables } from '../state';
 import { ConfigFile, IgnoreObjects, Rules } from '../types/configTypes';
 import { logError, logInfo } from '../util/logger';
@@ -41,19 +42,23 @@ const processConfig = (config: ConfigFile): void => {
   processRules(config.rules);
 };
 
-const checkConfig = (path: string): void => {
+const checkConfig = (configPath: string): void => {
   initRulesMap();
-  const exists = fs.existsSync(path);
+
+  const parsedPath = path.parse(configPath);
+  const fullPath = path.format(parsedPath);
+
+  const exists = fs.existsSync(fullPath);
 
   if (exists) {
     try {
-      const contents = fs.readFileSync(path, 'utf-8');
+      const contents = fs.readFileSync(fullPath, 'utf-8');
       const config: ConfigFile = JSON.parse(contents);
       processConfig(config);
       logInfo('Processed config file.\n');
     } catch (err) {
       logError(
-        `Cannot process config file at ${path}. Process whill be terminated.\n${err}`
+        `Cannot process config file at ${fullPath}. Process whill be terminated.\n${err}`
       );
       process.exit(1);
     }
