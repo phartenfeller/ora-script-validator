@@ -1,25 +1,15 @@
 import IndexType from '../types/IndexType';
+import ruleList from './ruleList';
 
 const rulesMap: Map<IndexType, boolean> = new Map();
 
-interface RulesIndexMatch {
-  [key: string]: IndexType;
-}
-
-const rulesIndexMatch: RulesIndexMatch = {
-  foreignKeys: IndexType.ForeignKey,
-  readGrants: IndexType.ReadGrant,
-  tableAlters: IndexType.AlterTable,
-  dmlStatements: IndexType.DMLStatement,
-};
-
 const initRulesMap = (): void => {
-  const indexTypeArray = Object.values(rulesIndexMatch);
+  const indexTypeArray = Object.values(ruleList);
   indexTypeArray.forEach((indexer) => rulesMap.set(indexer, true));
 };
 
 const deactivateRule = (rule: string): void => {
-  const indexer = rulesIndexMatch[rule];
+  const indexer = ruleList[rule];
   if (indexer) {
     rulesMap.set(indexer, false);
   }
