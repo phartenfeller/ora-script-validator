@@ -12,7 +12,7 @@ const genConfig = (): void => {
 
   import('./defaultConfig.js').then((config) => {
     try {
-      fs.writeFileSync(writePath, JSON.stringify(config, null, 2));
+      fs.writeFileSync(writePath, JSON.stringify(config.default, null, 2));
     } catch (err) {
       logError(`Error creating config: ${err}`);
       process.exit(1);
