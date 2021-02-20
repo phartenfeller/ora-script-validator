@@ -1,6 +1,6 @@
-import { ConfigFiles } from '../types/configTypes';
+import { ConfigFile } from '../types/configTypes';
 
-const configFile: ConfigFiles = {
+const configFile: ConfigFile = {
   // add e. g. tables that that won't result in errors
   // because they were added before
   ignoreObjects: {

@@ -15,6 +15,7 @@ interface options {
   version: boolean;
   traceFileIndexing: boolean;
   genConfig: boolean;
+  configPath: string | undefined;
 }
 
 const parseArgumentsIntoOptions = (rawArgs: string[]): options => {
@@ -24,10 +25,12 @@ const parseArgumentsIntoOptions = (rawArgs: string[]): options => {
       '--version': Boolean,
       '--traceFileIndexing': Boolean,
       '--genConfig': Boolean,
+      '--config': String,
 
       // aliases
       '-l': '--loglevel',
       '-v': '--version',
+      '-c': '--config',
     },
     {
       argv: rawArgs.slice(2),
@@ -40,6 +43,7 @@ const parseArgumentsIntoOptions = (rawArgs: string[]): options => {
     version: args['--version'] || false,
     traceFileIndexing: args['--traceFileIndexing'] || false,
     genConfig: args['--genConfig'] || false,
+    configPath: args['--config'],
   };
 };
 
@@ -70,8 +74,8 @@ const cli = (args: string[]): void => {
     validateInputs(options);
     const errors = main(
       options.file,
-      options.loglevel,
-      options.traceFileIndexing
+      options.traceFileIndexing,
+      options.configPath
     );
 
     if (errors.length > 0) {

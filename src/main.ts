@@ -1,10 +1,10 @@
 import fs from 'fs';
 import path from 'path';
+import checkConfig from './config/checkConfig';
 import indexFile from './fileIndexer';
 import { addSeqDef, addTableDef, getErrors, getTables } from './state';
 import ErrorList from './types/ErrorList';
 import IndexType from './types/IndexType';
-import Loglevel from './types/Loglevel';
 import { logDebug, logError } from './util/logger';
 import validateLink from './validators/linkValidator';
 import seqExistanceValidator from './validators/seqExistanceValidator';
@@ -81,10 +81,12 @@ const validateFile = ({ currentFile, dir }: validateFileParams) => {
  */
 const main = (
   relPath: string,
-  level: Loglevel,
-  traceFileIndexing = false
+  traceFileIndexing = false,
+  configPath = './orasv.config.json'
 ): ErrorList => {
   TFI = traceFileIndexing;
+
+  checkConfig(configPath);
 
   const parsedPath = path.parse(relPath);
   const exists = fs.existsSync(path.format(parsedPath));

@@ -1,15 +1,14 @@
+// All properties are optional
+
 export interface IgnoreObjects {
-  tables: string[];
+  tables?: string[];
 }
 
 export interface Rules {
-  foreignKeys: boolean;
-  readGrants: boolean;
-  tableAlters: boolean;
-  dmlStatements: boolean;
+  [key: string]: boolean;
 }
 
-export interface ConfigFiles {
-  ignoreObjects: IgnoreObjects;
-  rules: Rules;
+export interface ConfigFile {
+  ignoreObjects?: IgnoreObjects;
+  rules?: Rules;
 }

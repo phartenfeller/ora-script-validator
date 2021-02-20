@@ -105,3 +105,4 @@ dist
 
 db_objects
 temp.sql
+orasv.config.json
