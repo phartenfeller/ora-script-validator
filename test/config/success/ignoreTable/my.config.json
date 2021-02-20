@@ -1,0 +1,11 @@
+{
+  "ignoreObjects": {
+    "tables": ["already_exists"]
+  },
+  "rules": {
+    "foreignKeys": true,
+    "readGrants": true,
+    "tableAlters": true,
+    "dmlStatements": true
+  }
+}

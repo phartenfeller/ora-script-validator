@@ -1,0 +1,11 @@
+{
+  "ignoreObjects": {
+    "tables": []
+  },
+  "rules": {
+    "foreignKeys": true,
+    "readGrants": true,
+    "tableAlters": false,
+    "dmlStatements": true
+  }
+}
