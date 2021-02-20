@@ -76,14 +76,20 @@ const validateFile = ({ currentFile, dir }: validateFileParams) => {
   }
 };
 
+interface mainArgs {
+  relPath: string;
+  traceFileIndexing: boolean;
+  configPath?: string;
+}
+
 /**
  * Main function that starts the validation
  */
-const main = (
-  relPath: string,
+const main = ({
+  relPath,
   traceFileIndexing = false,
-  configPath = './orasv.config.json'
-): ErrorList => {
+  configPath = './orasv.config.json',
+}: mainArgs): ErrorList => {
   TFI = traceFileIndexing;
 
   checkConfig(configPath);

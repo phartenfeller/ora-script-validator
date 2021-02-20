@@ -72,11 +72,11 @@ const cli = (args: string[]): void => {
     genConfig();
   } else {
     validateInputs(options);
-    const errors = main(
-      options.file,
-      options.traceFileIndexing,
-      options.configPath
-    );
+    const errors = main({
+      relPath: options.file,
+      traceFileIndexing: options.traceFileIndexing,
+      configPath: options.configPath,
+    });
 
     if (errors.length > 0) {
       outputErrors(errors);
