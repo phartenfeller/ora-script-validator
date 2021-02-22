@@ -57,7 +57,7 @@ const matchers: Matcher[] = [
   // update statements
   {
     type: IndexType.DMLStatement,
-    regex: /\s*update\s*(\S+)\sset/i,
+    regex: /\s*update\s*(\S+)\s*set/i,
     identifierIndex: 1,
   },
   // delete statement
