@@ -75,7 +75,7 @@ const matchers: Matcher[] = [
   // sequence nextval
   {
     type: IndexType.SeqNextval,
-    regex: /\s*(\S+).nextval/i,
+    regex: /\s*([a-zA-Z_]+).nextval/i,
     identifierIndex: 1,
   },
 ];
