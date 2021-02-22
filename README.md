@@ -35,7 +35,8 @@ Default config:
 ```json
 {
   "ignoreObjects": {
-    "tables": []
+    "tables": [],
+    "sequences": []
   },
   "rules": {
     "table/foreignKeys": true,

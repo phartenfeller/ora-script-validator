@@ -14,40 +14,40 @@ describe('Config tests', () => {
   describe('Expect no errors || rules', () => {
     test('Disable rule table/foreignKeys', () => {
       const errors = main.default({
-        relPath: `./test/config/success/disableForeignKeys/install.sql`,
-        configPath: `./test/config/success/disableForeignKeys/my.config.json`,
+        relPath: `./test/config/success/rules/disableForeignKeys/install.sql`,
+        configPath: `./test/config/success/rules/disableForeignKeys/my.config.json`,
       }).tableRefErrors.length;
       expect(errors).toEqual(0);
     });
 
     test('Disable rule table/readGrants', () => {
       const errors = main.default({
-        relPath: `./test/config/success/disableReadGrants/install.sql`,
-        configPath: `./test/config/success/disableReadGrants/my.config.json`,
+        relPath: `./test/config/success/rules/disableReadGrants/install.sql`,
+        configPath: `./test/config/success/rules/disableReadGrants/my.config.json`,
       }).tableRefErrors.length;
       expect(errors).toEqual(0);
     });
 
     test('Disable rule table/dmlStatements', () => {
       const errors = main.default({
-        relPath: `./test/config/success/disableDmlStatements/install.sql`,
-        configPath: `./test/config/success/disableDmlStatements/my.config.json`,
+        relPath: `./test/config/success/rules/disableDmlStatements/install.sql`,
+        configPath: `./test/config/success/rules/disableDmlStatements/my.config.json`,
       }).tableRefErrors.length;
       expect(errors).toEqual(0);
     });
 
     test('Disable rule tableAlters', () => {
       const errors = main.default({
-        relPath: `./test/config/success/disableTableAlters/install.sql`,
-        configPath: `./test/config/success/disableTableAlters/my.config.json`,
+        relPath: `./test/config/success/rules/disableTableAlters/install.sql`,
+        configPath: `./test/config/success/rules/disableTableAlters/my.config.json`,
       }).tableRefErrors.length;
       expect(errors).toEqual(0);
     });
 
     test('Disable rule sequence/nextvals', () => {
       const errors = main.default({
-        relPath: `./test/config/success/disableSeqNextval/install.sql`,
-        configPath: `./test/config/success/disableSeqNextval/my.config.json`,
+        relPath: `./test/config/success/rules/disableSeqNextval/install.sql`,
+        configPath: `./test/config/success/rules/disableSeqNextval/my.config.json`,
       }).seqRefErrors.length;
       expect(errors).toEqual(0);
     });
@@ -57,7 +57,7 @@ describe('Config tests', () => {
   describe('Expect errors || rules', () => {
     test('Keep rule enabled: table/foreignKeys', () => {
       const errors = main.default({
-        relPath: `./test/config/success/disableForeignKeys/install.sql`,
+        relPath: `./test/config/success/rules/disableForeignKeys/install.sql`,
         configPath: `./test/config/error/orasv.config.json`,
       }).tableRefErrors.length;
       expect(errors).toEqual(1);
@@ -65,7 +65,7 @@ describe('Config tests', () => {
 
     test('Keep rule enabled: table/readGrants', () => {
       const errors = main.default({
-        relPath: `./test/config/success/disableReadGrants/install.sql`,
+        relPath: `./test/config/success/rules/disableReadGrants/install.sql`,
         configPath: `./test/config/error/orasv.config.json`,
       }).tableRefErrors.length;
       expect(errors).toEqual(1);
@@ -73,7 +73,7 @@ describe('Config tests', () => {
 
     test('Keep rule enabled: table/dmlStatements', () => {
       const errors = main.default({
-        relPath: `./test/config/success/disableDmlStatements/install.sql`,
+        relPath: `./test/config/success/rules/disableDmlStatements/install.sql`,
         configPath: `./test/config/error/orasv.config.json`,
       }).tableRefErrors.length;
       expect(errors).toEqual(1);
@@ -81,7 +81,7 @@ describe('Config tests', () => {
 
     test('Keep rule enabled: tableAlters', () => {
       const errors = main.default({
-        relPath: `./test/config/success/disableTableAlters/install.sql`,
+        relPath: `./test/config/success/rules/disableTableAlters/install.sql`,
         configPath: `./test/config/error/orasv.config.json`,
       }).tableRefErrors.length;
       expect(errors).toEqual(1);
@@ -89,7 +89,7 @@ describe('Config tests', () => {
 
     test('Keep rule enabled: sequence/nextvals', () => {
       const errors = main.default({
-        relPath: `./test/config/success/disableSeqNextval/install.sql`,
+        relPath: `./test/config/success/rules/disableSeqNextval/install.sql`,
         configPath: `./test/config/error/orasv.config.json`,
       }).seqRefErrors.length;
       expect(errors).toEqual(1);
@@ -99,20 +99,36 @@ describe('Config tests', () => {
   describe('Expect no errors || ignoreObjects', () => {
     test('Ignore Table with config', () => {
       const errors = main.default({
-        relPath: `./test/config/success/ignoreTable/install.sql`,
-        configPath: `./test/config/success/ignoreTable/my.config.json`,
+        relPath: `./test/config/success/ignoreObjects/tables/install.sql`,
+        configPath: `./test/config/success/ignoreObjects/tables/my.config.json`,
       }).tableRefErrors.length;
+      expect(errors).toEqual(0);
+    });
+
+    test('Ignore Sequences with config', () => {
+      const errors = main.default({
+        relPath: `./test/config/success/ignoreObjects/sequences/install.sql`,
+        configPath: `./test/config/success/ignoreObjects/sequences/my.config.json`,
+      }).seqRefErrors.length;
       expect(errors).toEqual(0);
     });
   });
 
   describe('Expect errors || ignoreObjects', () => {
-    test('Ignore Table with config', () => {
+    test(`Don't ignore Table with config`, () => {
       const errors = main.default({
-        relPath: `./test/config/success/ignoreTable/install.sql`,
+        relPath: `./test/config/success/ignoreObjects/tables/install.sql`,
         configPath: `./test/config/error/orasv.config.json`,
       }).tableRefErrors.length;
       expect(errors).toEqual(1);
+    });
+
+    test(`Don't ignore Sequence with config`, () => {
+      const errors = main.default({
+        relPath: `./test/config/success/ignoreObjects/sequences/install.sql`,
+        configPath: `./test/config/error/orasv.config.json`,
+      }).seqRefErrors.length;
+      expect(errors).toEqual(2);
     });
   });
 });

@@ -1,29 +1,39 @@
 import fs from 'fs';
 import path from 'path';
-import { initTables } from '../state';
+import { initSequences, initTables } from '../state';
 import { ConfigFile, IgnoreObjects, Rules } from '../types/configTypes';
 import { logError, logInfo } from '../util/logger';
 import { deactivateRule, initRulesMap } from './activeRules';
+
+const filterIgnoredObjects = (objects: string[], type: string): string[] => {
+  const filteredObjects = objects.filter((object) => {
+    if (typeof object !== 'string') {
+      logError(
+        `Config includes value that is not a string at ignoreObjects.${type} : ${JSON.stringify(
+          object
+        )}\nThe value will be ignored.`
+      );
+      return false;
+    }
+    return true;
+  });
+
+  return filteredObjects;
+};
 
 const processIgnoreObjects = (ignoreObjects: IgnoreObjects | undefined) => {
   if (!ignoreObjects) return;
 
   if (ignoreObjects.tables && Array.isArray(ignoreObjects.tables)) {
     const tables = ignoreObjects.tables;
-
-    const filteredTables = tables.filter((table) => {
-      if (typeof table !== 'string') {
-        logError(
-          `Config includes value that is not a string at ignoreObjects.tables : ${JSON.stringify(
-            table
-          )}\nThe value will be ignored.`
-        );
-        return false;
-      }
-      return true;
-    });
-
+    const filteredTables = filterIgnoredObjects(tables, 'tables');
     initTables(filteredTables);
+  }
+
+  if (ignoreObjects.sequences && Array.isArray(ignoreObjects.sequences)) {
+    const sequences = ignoreObjects.sequences;
+    const filteredTables = filterIgnoredObjects(sequences, 'sequences');
+    initSequences(filteredTables);
   }
 };
 

@@ -10,6 +10,7 @@ const configFile: ConfigFile = {
   // because they were added before
   ignoreObjects: {
     tables: [],
+    sequences: [],
   },
   // enable or disable rules
   rules: rulesObj,

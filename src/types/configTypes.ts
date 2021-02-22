@@ -2,6 +2,7 @@
 
 export interface IgnoreObjects {
   tables?: string[];
+  sequences?: string[];
 }
 
 export interface Rules {
