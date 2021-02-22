@@ -1,0 +1,5 @@
+{
+  "ignoreObjects": {
+    "tables": ["already_exists"]
+  }
+}

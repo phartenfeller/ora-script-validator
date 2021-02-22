@@ -1,11 +1,11 @@
 import fs from 'fs';
 import path from 'path';
+import checkConfig from './config/checkConfig';
 import indexFile from './fileIndexer';
 import { addSeqDef, addTableDef, getErrors, getTables } from './state';
 import ErrorList from './types/ErrorList';
 import IndexType from './types/IndexType';
-import Loglevel from './types/Loglevel';
-import { initLogger, logDebug, logError } from './util/logger';
+import { logDebug, logError } from './util/logger';
 import validateLink from './validators/linkValidator';
 import seqExistanceValidator from './validators/seqExistanceValidator';
 import tableExistanceValidator from './validators/tableExistanceValidator';
@@ -54,6 +54,7 @@ const validateFile = ({ currentFile, dir }: validateFileParams) => {
               table: match.identifier,
               callingFile: match.callingFile,
               match: match.match,
+              indexer: match.type,
             });
             break;
           case IndexType.CreateSequence:
@@ -76,16 +77,24 @@ const validateFile = ({ currentFile, dir }: validateFileParams) => {
   }
 };
 
+interface mainArgs {
+  relPath: string;
+  traceFileIndexing?: boolean;
+  configPath?: string;
+}
+
 /**
  * Main function that starts the validation
  */
-const main = (
-  relPath: string,
-  level: Loglevel,
-  traceFileIndexing = false
-): ErrorList => {
-  initLogger(level);
+const main = (args: mainArgs): ErrorList => {
+  const {
+    relPath,
+    traceFileIndexing = false,
+    configPath = './orasv.config.json',
+  } = args;
   TFI = traceFileIndexing;
+
+  checkConfig(configPath);
 
   const parsedPath = path.parse(relPath);
   const exists = fs.existsSync(path.format(parsedPath));

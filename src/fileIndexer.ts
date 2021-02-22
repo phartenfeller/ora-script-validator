@@ -86,7 +86,7 @@ const indexFile = (path: string, tfi: boolean | undefined): IndexMatch[] => {
   const fileContents = readAndPrepareFile(path);
 
   // trace file index mode only prints the output of readAndPrepareFile and the matches
-  if (tfi) {
+  if (tfi === true) {
     logInfo('====== readAndPrepareFile ======');
     logInfo(fileContents);
     logInfo('\n\n');
@@ -116,7 +116,7 @@ const indexFile = (path: string, tfi: boolean | undefined): IndexMatch[] => {
     }
   });
 
-  if (tfi) {
+  if (tfi === true) {
     logInfo('====== matches ======');
     const logMatches = matches.map((match) => {
       return { typeString: IndexType[match.type], ...match };

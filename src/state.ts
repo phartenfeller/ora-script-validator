@@ -1,7 +1,7 @@
 import ErrorList from './types/ErrorList';
 import { logDebug, logError } from './util/logger';
 
-const tables: string[] = [];
+let tables: string[] = [];
 const sequences: string[] = [];
 
 const errors: ErrorList = {
@@ -9,6 +9,10 @@ const errors: ErrorList = {
   tableRefErrors: [],
   seqRefErrors: [],
   length: 0,
+};
+
+const initTables = (configTables: string[]) => {
+  tables = configTables;
 };
 
 // Table functions
@@ -76,6 +80,7 @@ const getErrors = (): ErrorList => {
 };
 
 export {
+  initTables,
   addLinkError,
   addTableRefError,
   getErrors,
