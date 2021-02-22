@@ -51,6 +51,14 @@ describe('File Links', () => {
       }).tableRefErrors.length;
       expect(errors).toEqual(0);
     });
+
+    test('Disable rule sequence/nextvals', () => {
+      const errors = main.default({
+        relPath: `./test/config/success/disableSeqNextval/install.sql`,
+        configPath: `./test/config/success/disableSeqNextval/my.config.json`,
+      }).seqRefErrors.length;
+      expect(errors).toEqual(0);
+    });
   });
 
   // test('Expect errors', () => {

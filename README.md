@@ -4,8 +4,9 @@ A CLI to validate Oracle SQL-Scripts for common errors.
 
 ## Supported checks
 
-- Linked Files (e.g. @@myscript.sql)
-- Table References (Foreign Keys, Read Grants, Alters, DML)
+- Linked files (e.g. @@myscript.sql)
+- Table refs (Foreign Keys, Read Grants, Alters, DML)
+- Sequence refs (nextval)
 
 ## Usage
 
@@ -40,7 +41,8 @@ Default config:
     "table/foreignKeys": true,
     "table/readGrants": true,
     "table/tableAlters": true,
-    "table/dmlStatements": true
+    "table/dmlStatements": true,
+    "sequence/nextvals": true
   }
 }
 ```

@@ -9,6 +9,7 @@ const ruleList: RuleList = {
   'table/readGrants': IndexType.ReadGrant,
   'table/tableAlters': IndexType.AlterTable,
   'table/dmlStatements': IndexType.DMLStatement,
+  'sequence/nextvals': IndexType.SeqNextval,
 };
 
 export default ruleList;
