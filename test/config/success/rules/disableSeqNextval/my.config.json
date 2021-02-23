@@ -1,0 +1,5 @@
+{
+  "rules": {
+    "sequence/nextvals": false
+  }
+}

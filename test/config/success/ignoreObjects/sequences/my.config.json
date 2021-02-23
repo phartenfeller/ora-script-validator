@@ -1,0 +1,5 @@
+{
+  "ignoreObjects": {
+    "sequences": ["disabled_seq", "undefined_seq"]
+  }
+}

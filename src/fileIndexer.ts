@@ -17,6 +17,11 @@ interface Matcher {
   identifierIndex: number | null;
 }
 
+/*
+Object Name matcher => [a-z0-9_]+
+! No spaces allowed
+*/
+
 const matchers: Matcher[] = [
   // links to other scripts
   {
@@ -27,55 +32,55 @@ const matchers: Matcher[] = [
   // table creatons
   {
     type: IndexType.Table,
-    regex: /\s*create\s*table\s*(\S+)/i,
+    regex: /\s*create\s*table\s*([a-z0-9_]+)/i,
     identifierIndex: 1,
   },
   // foreign keys
   {
     type: IndexType.ForeignKey,
-    regex: /\s*foreign\s*key.*references\s*(\S+)/i,
+    regex: /\s*foreign\s*key.*references\s*([a-z0-9_]+)/i,
     identifierIndex: 1,
   },
   // read / select grants
   {
     type: IndexType.ReadGrant,
-    regex: /\s*grant\s*(read|select)\s*on\s*(\S+)/i,
+    regex: /\s*grant\s*(read|select)\s*on\s*([a-z0-9_]+)/i,
     identifierIndex: 2,
   },
   // alter table
   {
     type: IndexType.AlterTable,
-    regex: /\s*alter\s*table\s*(\S+)/i,
+    regex: /\s*alter\s*table\s*([a-z0-9_]+)/i,
     identifierIndex: 1,
   },
   // insert statement
   {
     type: IndexType.DMLStatement,
-    regex: /\s*insert\s*into\s*(\S+)/i,
+    regex: /\s*insert\s*into\s*([a-z0-9_]+)/i,
     identifierIndex: 1,
   },
   // update statements
   {
     type: IndexType.DMLStatement,
-    regex: /\s*update\s*(\S+)\sset/i,
+    regex: /\s*update\s*([a-z0-9_]+)\s*set/i,
     identifierIndex: 1,
   },
   // delete statement
   {
     type: IndexType.DMLStatement,
-    regex: /\s*delete\s*from\s*(\S+)/i,
+    regex: /\s*delete\s*from\s*([a-z0-9_]+)/i,
     identifierIndex: 1,
   },
   // create sequence
   {
     type: IndexType.CreateSequence,
-    regex: /\s*create\s*sequence\s*(\S+[^;])/i,
+    regex: /\s*create\s*sequence\s*([a-z0-9_]+[^;])/i,
     identifierIndex: 1,
   },
   // sequence nextval
   {
     type: IndexType.SeqNextval,
-    regex: /\s*(\S+).nextval/i,
+    regex: /\s*([a-z0-9_]+).nextval/i,
     identifierIndex: 1,
   },
 ];
@@ -86,7 +91,7 @@ const indexFile = (path: string, tfi: boolean | undefined): IndexMatch[] => {
   const fileContents = readAndPrepareFile(path);
 
   // trace file index mode only prints the output of readAndPrepareFile and the matches
-  if (tfi) {
+  if (tfi === true) {
     logInfo('====== readAndPrepareFile ======');
     logInfo(fileContents);
     logInfo('\n\n');
@@ -116,7 +121,7 @@ const indexFile = (path: string, tfi: boolean | undefined): IndexMatch[] => {
     }
   });
 
-  if (tfi) {
+  if (tfi === true) {
     logInfo('====== matches ======');
     const logMatches = matches.map((match) => {
       return { typeString: IndexType[match.type], ...match };

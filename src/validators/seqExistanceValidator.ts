@@ -1,4 +1,6 @@
+import { isActive } from '../config/activeRules';
 import { addSeqRefError, seqExists } from '../state';
+import IndexType from '../types/IndexType';
 
 interface seqExistanceValidatorParams {
   seq: string | undefined;
@@ -11,6 +13,7 @@ const seqExistanceValidator = ({
   match,
   callingFile,
 }: seqExistanceValidatorParams): void => {
+  if (!isActive(IndexType.SeqNextval)) return;
   const exists = seqExists(seq);
 
   if (!exists) {

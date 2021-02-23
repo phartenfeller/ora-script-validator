@@ -4,8 +4,9 @@ A CLI to validate Oracle SQL-Scripts for common errors.
 
 ## Supported checks
 
-- Linked Files (e.g. @@myscript.sql)
-- Table References (Foreign Keys, Read Grants, Alters, DML)
+- Linked files (e.g. @@myscript.sql)
+- Table refs (Foreign Keys, Read Grants, Alters, DML)
+- Sequence refs (nextval)
 
 ## Usage
 
@@ -23,6 +24,38 @@ npm i -g orasv
 orasv install.sql
 ```
 
+## Config
+
+A config is not needed to run orasv but can be provided to configure the error checking process. The config does not have to be complete when a property is missing it will fall back to the default settings.
+
+See: [CLI config arguments](#Config-File) for config generation and custom config path arguments.
+
+Default config:
+
+```json
+{
+  "ignoreObjects": {
+    "tables": [],
+    "sequences": []
+  },
+  "rules": {
+    "table/foreignKeys": true,
+    "table/readGrants": true,
+    "table/tableAlters": true,
+    "table/dmlStatements": true,
+    "sequence/nextvals": true
+  }
+}
+```
+
+`ignoreObjects`:
+
+Specify object that will be ignored and not result into errors.
+
+`rules`:
+
+Enable and disable specific rule
+
 ## Arguments
 
 ### Version
@@ -35,6 +68,24 @@ Example:
 
 ```sh
 orasv -v
+```
+
+### Config File
+
+Generate config file (written to the current dir as `orasv.config.json`):
+
+```sh
+orasv --genConfig
+```
+
+Pass custom config path (default is `orasv.config.json`):
+
+`orasv -c {path}` or `orasv --config {path}`
+
+Example:
+
+```sh
+orasv -c ./config/myOrasvConfig.json
 ```
 
 ### Loglevel
@@ -65,5 +116,5 @@ Levels:
 Prints how a file is internally indexed.
 
 ```sh
-orasv ìnstall.sql --traceFileIndexing
+orasv install.sql --traceFileIndexing
 ```
