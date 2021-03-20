@@ -24,6 +24,8 @@ npm i -g orasv
 orasv install.sql
 ```
 
+[![NPM](https://nodei.co/npm/orasv.png)](https://nodei.co/npm/orasv/)
+
 ## Config
 
 A config is not needed to run orasv but can be provided to configure the error checking process. The config does not have to be complete when a property is missing it will fall back to the default settings.
